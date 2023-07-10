@@ -1,0 +1,38 @@
+ribo_rna:
+  [
+    "H10_2023May19_S10",
+    "H1_2023May19_S1",
+    "H2_2023May19_S2",
+    "H3_2023May19_S3",
+    "H4_2023May19_S4",
+    "H5_2023May19_S5",
+    "H6_2023May19_S6",
+    "H7_2023May19_S7",
+    "H8_2023May19_S8",
+    "H9_2023May19_S9",
+    "H16_2023Apr16_S15",
+    "H3_2023Apr16_S3",
+    "H23_2023Apr16_S19",
+    "H26_2023Apr16_S22",
+  ]
+
+group:
+  [
+    "input1",
+    "input2",
+    "treat1",
+    "treat2",
+    "treat3"
+  ]
+
+
+
+nn_fa: "resource/nnunn"
+nn_fasta: "resource/nnunn.fa"
+
+
+
+###tRNA_snorna_cdhit.fa: conbined nonredundant snoRNA set and high confident tRNA set
+
+##/well/ludwig/users/ebu571/conda/skylake/envs/env_seqkit/bin/seqkit rmdup -s snoRNA_reference.fasta -o snoRNA_reference_rmdp.fasta
+##mv snoRNA_reference_rmdp.fasta snoRNA_reference.fasta
