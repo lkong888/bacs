@@ -1,0 +1,35 @@
+mrna:
+  [
+    "H1_2023Jun19_S1",
+    "H2_2023Jun19_S2",
+    "H3_2023Jun19_S3",
+    "H4_2023Jun19_S4",
+    "H5_2023Jun19_S5",
+    "H6_2023Jun19_S6",
+    "H7_2023Jun19_S7",
+    "H8_2023Jun19_S8",
+  ]
+
+merge:
+  [
+    "treat1",
+    "treat2",
+    "input1",
+    "input2",
+  ]
+
+merge1:
+  [
+    "H1",
+    "H2",
+    "H3",
+    "H4",
+    "H5",
+    "H6",
+    "H7",
+    "H8",
+  ]
+
+nn_fa: "resource/nnunn"
+nn_fasta: "resource/nnunn.fa"
+
