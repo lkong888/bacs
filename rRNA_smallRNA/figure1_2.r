@@ -479,8 +479,8 @@ seldat <- mergedat[,c("chr", "start", "end", "ctrl_conversion", "treat_conversio
 terc <- seldat[seldat$chr=="NR_001566.1_TERC",] %>% dplyr::select(end,ctrl_conversion, treat_conversion)
 
 melterc <- melt(terc, id.var="end")
-pdf("plot/TERC_plot.pdf", width=12,height = 4)
-ggplot(melterc, aes(group=variable, col=variable))+geom_segment(aes(x=end, y=round(value,4)*100,xend=end,yend=0), size=0.65)+geom_point(aes(x=end, y=round(value,4)*100),size=4) +ylab("conversion ratio(%)")+xlab("")+
+pdf("plot/TERC_plot.pdf", width=18,height = 4)
+ggplot(melterc, aes(group=variable, col=variable))+geom_segment(aes(x=end, y=round(value,4)*100,xend=end,yend=0), size=0.65)+geom_point(aes(x=end, y=round(value,4)*100),size=4) +ylab("conversion ratio(%)")+xlab("")+geom_hline(yintercept=5, linetype="dashed", color = "grey")+
 theme_bw() +scale_x_continuous(limits = c(0,500), expand = c(0, 0))+ scale_y_continuous(limits = c(-2,102), expand = c(0, 0))+scale_color_manual(values=c('#ABABAB','#FE767C'))
 dev.off()
 
@@ -489,7 +489,7 @@ u4atac <- seldat[seldat$chr=="NR_023343.1_RNU4ATAC",] %>% dplyr::select(end,ctrl
 melu4atac <- melt(u4atac, id.var="end")
 pdf("plot/U4ATAC_plot.pdf", width=12,height = 4)
 ggplot(melu4atac, aes(group=variable, col=variable))+geom_segment(aes(x=end, y=round(value,4)*100,xend=end,yend=0), size=0.65)+geom_point(aes(x=end, y=round(value,4)*100),size=4) +ylab("conversion ratio(%)")+xlab("")+
-theme_bw() +scale_x_continuous(limits = c(0,140), expand = c(0, 0))+ scale_y_continuous(limits = c(-2,102), expand = c(0, 0))+scale_color_manual(values=c('#ABABAB','#FE767C'))
+theme_bw() +scale_x_continuous(limits = c(0,150), expand = c(0, 0))+ scale_y_continuous(limits = c(-2,102), expand = c(0, 0))+scale_color_manual(values=c('#ABABAB','#FE767C'))
 dev.off()
 
 
