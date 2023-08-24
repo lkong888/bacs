@@ -24,7 +24,27 @@ rule all:
         #expand("splitbam/{sample}.mRNA_pseusite.mpile.txt.gz", sample=SAMPLES),
         #expand("rpkm/{sample}.tpm", sample=SAMPLES)
         #expand("site/treat{index}_input{index}_pvalue{splitid}", index=['1','2'], splitid=['00','01','02','03','04','05','06','07','08','09']),
-        expand("mergebam/{sample}.mapping_report.txt", sample=SAMPLES),
+        expand("mergebam/{sample}.mapping_report.txt", sample=SAMPLES)
+
+rule merge: 
+    input:
+        bam1=expand("/users/ludwig/ebu571/ebu571/26May2023/align/{sample}.mRNAAligned.sortedByCoord.out.bam",  sample=['H1_2023May26_S1','H2_2023May26_S2', 'H3_2023May26_S3', 'H4_2023May26_S4','H5_2023May26_S5', 'H6_2023May26_S6','H7_2023May26_S7','H8_2023May26_S8']),
+        bam2=expand("align/{sample}.mRNAAligned.sortedByCoord.out.bam",  sample=['H1_2023Jun19_S1','H2_2023Jun19_S2', 'H3_2023Jun19_S3', 'H4_2023Jun19_S4','H5_2023Jun19_S5', 'H6_2023Jun19_S6','H7_2023Jun19_S7','H8_2023Jun19_S8'])
+    output:
+        expand("mergebam/{sample}.mRNAAligned.sortedByCoord.out.bam",sample=['treat1','treat2', 'input1','input2']),
+        
+    envmodules: 
+    threads: 2
+    shell:
+        """
+        /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools merge {output[0]} {input.bam1[0]} {input.bam2[0]} {input.bam1[1]} {input.bam2[1]}
+        /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools merge {output[1]} {input.bam1[2]} {input.bam2[2]} {input.bam1[3]} {input.bam2[3]}
+        /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools merge {output[2]} {input.bam1[4]} {input.bam2[4]} {input.bam1[5]} {input.bam2[5]}
+        /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools merge {output[3]} {input.bam1[6]} {input.bam2[6]} {input.bam1[7]} {input.bam2[7]}
+
+        """
+
+
 rule star_dedup: 
     input:
         "mergebam/{sample}.mRNAAligned.sortedByCoord.out.bam"
