@@ -66,6 +66,13 @@ if(grepl("align/H7_H9", input) | grepl("align/treat2_input2", input)){
 
 ####append actual modification level and fp in given motif
 colnames(dat) <- c("chr", "start", "end", "ref", "treat_depth", "treat_T", "treat_C", "treat_conversion", "treat_gap", "treat_gap_rate", "motif", "ctrl_depth", "ctrl_T", "ctrl_C", "ctrl_conversion", "ctrl_gap", "ctrl_gap_rate")
+if(nrow(dat[grepl("N",dat$motif),])>0){  ###mt-reference contains N
+    for (i in 1:nrow(dat)){
+      if(grepl("N",dat[i,]$motif)){
+        dat[i,]$motif <- "."
+      }
+    }
+}
 dat <- merge(dat, spikein, by=c("motif"),all.x=TRUE)
 dat$treat_level <- (dat$treat_conversion-as.numeric(dat$fp))/(as.numeric(dat$conversion)-as.numeric(dat$fp))
 
