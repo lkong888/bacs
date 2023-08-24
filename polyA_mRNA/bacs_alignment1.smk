@@ -1,11 +1,12 @@
 """
-this script is for read pre-processing, read alignment, mapping statistics for synthetic spike in; rRNA, snoRNA and tRNA.
+Workflow for read preprocessing,read alignment mainly for mRNA
 inputs: 
     fastq
 outputs:
+    bam,txt
 run:
 module load snakemake/5.26.1-foss-2019b-Python-3.7.4 
-snakemake -np --use-envmodules --max-status-checks-per-second 0.01 -j 14 --snakefile code/bacs_alignment1.smk --cluster "sbatch -p short -o bacs.log -e bacs.err --job-name=bacs --constraint=hga --cpus-per-task 3 "
+snakemake --use-envmodules --max-status-checks-per-second 0.01 -j 8 --snakefile code/analysis_for_haiqi.smk --cluster "sbatch -p short -o bacs.log -e bacs.err --job-name=bacs1 --constraint=hga --cpus-per-task 3 "
 """
 
 
@@ -14,7 +15,7 @@ min_version("5.26")
 
 configfile: "code/configure.yaml"
 
-SAMPLES = config["ribo_rna"]
+SAMPLES = config["mrna"]
 nn_fa = config["nn_fa"]
 nn_fasta = config["nn_fasta"]
 
@@ -22,14 +23,12 @@ print(SAMPLES)
 
 rule all:
     input:
-        expand("fastq/{sample}.clean.merge.fq.gz", sample = SAMPLES),
+        expand("fastq/{sample}.R{readDirection}.clean.fq.gz", sample = SAMPLES, readDirection=['1','2']),
         expand("align/{sample}.nnunn.clean.filter.sort_pseusite.mpile.txt", sample = SAMPLES),
-        expand("align/{sample}.rRNA.filter.dedup.bam", sample = SAMPLES),
-        expand("align/{sample}.rRNA.filter.dedup_pseusite.mpile.txt", sample = SAMPLES),
         expand("align/{sample}.clean.nnunn.sort_NNUNN1.contex.table", sample = SAMPLES),
-        expand("align/{sample}.rRNA.filter.dedup.mpile.2kb_mutation_sta_plot.txt", sample = SAMPLES),
-        expand("align/{sample}.snoRNA.tRNA.clean.bowtie2.filter.sort.bam", sample = SAMPLES),
-        expand("align/{sample}.mapping_report.txt", sample = SAMPLES),
+        expand("align/{sample}.rRNA.filter.dedup_pseusite.mpile.txt", sample = SAMPLES),
+        expand("align/{sample}.mRNAAligned.sortedByCoord.out.bam", sample = SAMPLES),
+        expand("align/{sample}.mapping_report.txt", sample = SAMPLES)
 
 
 
@@ -263,18 +262,6 @@ rule merge_count:
         cat {output.mpile} | grep -v ^spike_in | grep -v ^nnunn| awk '$3=="T" || $3=="t"' | awk '{{OFS="\\t"}}{{print $1, $2, $3, $4, $8+$17, $6+$15, $11+$20}}' >> {output.sta}
         
         """
-
-rule unmodified_2kb:
-    input:
-        mpile="align/{sample}.rRNA.filter.dedup.mpile.txt"
-    output:
-        "align/{sample}.rRNA.filter.dedup.mpile.2kb_mutation_sta_plot.txt"
-    envmodules: "R/4.2.1-foss-2022a "
-    threads: 2
-    shell:
-        """
-            Rscript code/spikein_sta_2kb.r {input} 
-        """
 ##############################################################################################################################################################################
 ############################Align for smallRNA spikein########################     
 rule align_snorna: 
@@ -321,37 +308,39 @@ rule align_trna:
         /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools index {output.bam}
         """
 
-
-rule merge_sno_trna: 
+##############################################################################################################################################################################
+############################Align for mRNA ########################      
+rule align_star: 
     input:
-        sno="align/{sample}.snoRNA.clean.bowtie2.bam",
-        trna="align/{sample}.tRNA.clean.bowtie2.bam"
-
+        "fastq/{sample}.tRNA.clean_unalign.fq.gz"
     output:
-        "align/{sample}.snoRNA.tRNA.clean.bowtie2.bam"
-        
-    envmodules: "samtools/1.8-gcc5.4.0"
-    threads: 2
-    shell:
-        """
-        samtools merge {output} {input.sno} {input.trna}
-        """
-rule filter: 
-    input:
-        "align/{sample}.snoRNA.tRNA.clean.bowtie2.bam"
-    output:
-        sortbam="align/{sample}.snoRNA.tRNA.clean.bowtie2.filter.sort.bam",
+        "align/{sample}.mRNAAligned.sortedByCoord.out.bam"
+    log:
+        "logs/{sample}.mRNA_star.log"
     params:
-        tmp="{sample}.tmp",
-        mq=" -q 1",
+        output_pre="align/{sample}.mRNA",
+        tmp="{sample}_tmp"
+    envmodules: "STAR/2.7.9a-GCC-11.2.0", "samtools/1.8-gcc5.4.0"
     threads: 2
     shell:
         """
-        /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools index {input}
-        /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools view {params.mq} -bS {input} | /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools sort -@ 8 -O BAM -T {params.tmp} --input-fmt-option 'filter=[NM]<=10' >{output.sortbam}
-        /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools index {output.sortbam}
-        """
+        STAR --runThreadN {threads} \
+        --genomeDir /users/ludwig/ebu571/ebu571/resource/hg38_star_index \
+        --readFilesIn {input} \
+        --readFilesCommand zcat \
+        --outTmpDir {params.tmp} \
+        --alignEndsType Local \
+        --outFilterMatchNminOverLread 0.66 \
+        --outFilterMatchNmin 15 \
+        --outFilterMismatchNmax 10 \
+        --outFilterMultimapNmax 50 \
+        --outSAMmultNmax -1 \
+        --outSAMtype BAM SortedByCoordinate \
+        --outFileNamePrefix {params.output_pre} \
+        --outSAMattributes NH HI AS nM NM MD jM jI MC \
+        --outReadsUnmapped Fastx
 
+        """
 rule mapping:
     input:
         fq1="fastq/{sample}_R1.fastq.gz",
@@ -369,14 +358,13 @@ rule mapping:
         snorna_unalign="fastq/{sample}.snoRNA.clean_unalign.fq.gz",
         trna_map="align/{sample}.tRNA.clean.bowtie2.bam",
         trna_unalign="fastq/{sample}.tRNA.clean_unalign.fq.gz",
-        snorna_trna_merge="align/{sample}.snoRNA.tRNA.clean.bowtie2.bam",
-        snorna_trna_filtered="align/{sample}.snoRNA.tRNA.clean.bowtie2.filter.sort.bam",
+        mRNA_map="align/{sample}.mRNAAligned.sortedByCoord.out.bam"
     output:
         "align/{sample}.mapping_report.txt", 
     envmodules: "samtools/1.8-gcc5.4.0"
     shell:
         """
-        echo -e "smp\\traw_reads_r1\\traw_reads_r2\\tclean_reads_r1\\tclean_reads_r2\\tmergefq\\tnnunn\\tnnunn_q10\\trrna_input\\trrna_mapped\\trrna_filtered\\trrna_unalign\\tsnorna_map\\tsnorna_unalign\\ttrna_map\\ttrna_unalign\\tsnorna_trna_merge\\tsnorna_trna_filtered" > {output}
+        echo -e "smp\\traw_reads_r1\\traw_reads_r2\\tclean_reads_r1\\tclean_reads_r2\\tmergefq\\tnnunn\\tnnunn_q10\\trrna_input\\trrna_mapped\\trrna_filtered\\trrna_unalign\\tsnorna_map\\tsnorna_unalign\\ttrna_map\\ttrna_unalign\\tmRNA_map" > {output}
         raw_reads_r1=`echo $(zcat {input.fq1}|wc -l)/4|bc`
         raw_reads_r2=`echo $(zcat {input.fq2}|wc -l)/4|bc`
         clean_reads_r1=`echo $(zcat {input.clean1}|wc -l)/4|bc`
@@ -395,10 +383,8 @@ rule mapping:
         trna_map=`samtools view {input.trna_map} | cut -f 1 | sort | uniq | wc -l`
         trna_unalign=`echo $(zcat {input.trna_unalign}|wc -l)/4|bc`
 
-        snorna_trna_merge=`samtools view {input.snorna_trna_merge} | cut -f 1 | sort | uniq | wc -l`
-        snorna_trna_filtered=`samtools view {input.snorna_trna_filtered} | cut -f 1 | sort | uniq | wc -l`
+        mRNA_map=`samtools view {input.mRNA_map} | cut -f 1 | sort | uniq | wc -l`
 
-
-        echo -e "{output}\\t${{raw_reads_r1}}\\t${{raw_reads_r2}}\\t${{clean_reads_r1}}\\t${{clean_reads_r2}}\\t${{mergefq}}\\t${{nnunn}}\\t${{nnunn_q10}}\\t${{rrna_input}}\\t${{rrna_mapped}}\\t${{rrna_filtered}}\\t${{rrna_unalign}}\\t${{snorna_map}}\\t${{snorna_unalign}}\\t${{trna_map}}\\t${{trna_unalign}}\\t${{snorna_trna_merge}}\\t${{snorna_trna_filtered}}" >> {output}
+        echo -e "{output}\\t${{raw_reads_r1}}\\t${{raw_reads_r2}}\\t${{clean_reads_r1}}\\t${{clean_reads_r2}}\\t${{mergefq}}\\t${{nnunn}}\\t${{nnunn_q10}}\\t${{rrna_input}}\\t${{rrna_mapped}}\\t${{rrna_filtered}}\\t${{rrna_unalign}}\\t${{snorna_map}}\\t${{snorna_unalign}}\\t${{trna_map}}\\t${{trna_unalign}}\\t${{mRNA_map}}" >> {output}
         
         """
