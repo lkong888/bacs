@@ -21,7 +21,8 @@ For RNA viruses, the following reference genomes were used: Severe acute respira
 
 
 # 1. Data preprocessing, alignments, filtering, and mutation counts
-
+For Ribo-depletion libraries: bacs_smallrna.smk, bacs_smallrna_callsite.smk 
+For polyA libraries: 
 
 
 # 2. Raw signals correlation between CAPSplus, CAPS, TAB-seq and ACE-seq(Figure 4c, Figure S13)
