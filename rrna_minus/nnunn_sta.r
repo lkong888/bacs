@@ -1,5 +1,4 @@
 #module load R/4.0.3-foss-2020b 
-setwd("/gpfs3/well/ludwig/users/ebu571/20May2023_final")
 library(GenomicAlignments)
 library(dplyr)
 library(reshape2)
@@ -7,7 +6,6 @@ library(tidyr)
 options <- commandArgs(trailingOnly = TRUE)
 fn0 <- options[1]
 fn <- gsub(".bam","",fn0)
-#write.table(stack1, "H3_2023Mar27_S3.trimmed_R2.nnunn.sort.txt", quote = FALSE, col.names = F, row.names = F)
 
 motif <- function(input, ref){
     ref <- paste0(ref)
