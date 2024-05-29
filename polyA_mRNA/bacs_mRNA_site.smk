@@ -11,8 +11,6 @@ snakemake -np --use-envmodules --max-status-checks-per-second 0.01 -j 8 --snakef
 rule all:
     input:
         expand("site/treat_input_allT_motif{splitid}", splitid=['00','01','02','03','04','05','06','07','08','09']),
-        expand("site/treat_input_pvalue{splitid}", splitid=['00','01','02','03','04','05','06','07','08','09']),
-        expand("site/treat_input_ivt_pvalue{splitid}", splitid=['00','01','02','03','04','05','06','07','08','09']),
         expand("site/treat_input_ivt_pvalue1{splitid}", splitid=['00','01','02','03','04','05','06','07','08','09']),
 
 ##############call site
@@ -67,21 +65,6 @@ rule splitbed:
         linenum0=`echo "($(wc -l < "{input}") / 10) + 1" | bc`
         split -d {input} {params.prefix} -l $linenum0
         
-     """
-
-rule test:
-  input:
-    expand("site/treat_input_allT_motif{{splitid}}")
-  output:
-    expand("site/treat_input_pvalue{{splitid}}")
-  params:
-    spikein="mergebam/mrna_spikein.table"
-  threads: 1
-  envmodules:
-    "R/4.0.3-foss-2020b"
-  shell:
-     """
-        Rscript code/calling_mRNA.r {input} {output} {params.spikein}
      """
 
 rule test_ivt1:
