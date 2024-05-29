@@ -99,24 +99,3 @@ for (i in 1:nrow(dat)){
 }
 print("finished test")
 
-
-
-
-
-
-
-
-##called sites
-#site <- dat[(dat$treat_T+dat$treat_C)>=20 & (dat$ctrl_T+dat$ctrl_C)>=20 & dat$TPM >1 & as.numeric(dat$ctrl_conversion)<0.01 & as.numeric(dat$treat_level)>=0.05,]
-#site <- dat[(dat$treat_T+dat$treat_C)>=20 & (dat$ctrl_T+dat$ctrl_C)>=20 & as.numeric(dat$treat_level)>=0.05,] %>% na.omit()
-#site1 <- site[as.numeric(site$ctrl_conversion)<0.01 | as.numeric(site$ctrl_C)<2,] %>% na.omit()
-#background <- dat[as.numeric(dat$ctrl_conversion)>=0.01 & as.numeric(dat$ctrl_C)>=2,]
-
-#write.table(site1, output1, quote = FALSE, col.names = T, row.names = F)
-#write.table(dat[(dat$treat_T+dat$treat_C)>=20 & (dat$ctrl_T+dat$ctrl_C)>=20,], output2, quote = FALSE, col.names = T, row.names = F)
-write.table(dat, output, quote = FALSE, col.names = T, row.names = F)
-}
-
-#call_sites("mergebam/treat1_input1_allT_motif.bed", "site/treat1_input1_sites.txt")
-#call_sites("mergebam/treat2_input2_allT_motif.bed", "site/treat2_input2_sites.txt")
-call_sites(input, output)
