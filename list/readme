@@ -1,0 +1,10 @@
+rRNA list for figure2.r
+bacs_rrna_called_sites_07Nov2023.txt
+bacs_rrna_all_sites_07Nov2023.txt
+
+snRNA list for figure2.r
+bacs_rrna_called_sites_27Oct2023.txt
+bacs_rrna_all_sites_27Oct2023.txt
+
+And psi sites for Hela, Raji, elijah
+bacs_snrna_allcelllines_merge_sites.txt
