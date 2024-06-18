@@ -243,7 +243,7 @@ rule merge_count:
     shell:
         """
         /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools merge {output.sample} {input.longbam} {input.shortbam}
-        /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools mpileup --no-BAQ -d 0 -Q 10 --reverse-del \
+        /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools mpileup -d 0 -Q 10 --reverse-del \
             -f {params.ref} {output.sample} | /users/ludwig/ebu571/ebu571/tools/cpup/cpup | sed 's/,/\\t/g' > {output.mpile}
         cat {output.mpile} | grep -v ^spike_in | grep -v ^nnunn| awk '$3=="T" || $3=="t"' |  awk '{{OFS="\\t"}}{{print $1, $2, $3, $4, $8+$17, $6+$15, $11+$20, $5+$14+$7+$16}}' > {output.sta}
         
@@ -440,7 +440,7 @@ rule countU_snoRNA:
     shell:
         """
         /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools index {input}
-        /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools mpileup --no-BAQ -d 0 -Q 10 --reverse-del \
+        /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools mpileup -d 0 -Q 10 --reverse-del \
             -f {params.ref} {input} | /users/ludwig/ebu571/ebu571/tools/cpup/cpup | sed 's/,/\\t/g' > {output.mpile}
         cat {output.mpile} | awk '$3=="T" || $3=="t"' |  awk '{{OFS="\\t"}}{{print $1, $2, $3, $4, $8+$17, $6+$15, $11+$20, $5+$14+$7+$16}}' > {output.sta}
         """
@@ -457,7 +457,7 @@ rule countU_tRNA:
     shell:
         """
         /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools index {input}
-        /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools mpileup --no-BAQ -d 0 -Q 10 --reverse-del \
+        /well/ludwig/users/ebu571/conda/skylake/envs/samtools/bin/samtools mpileup -d 0 -Q 10 --reverse-del \
             -f {params.ref} {input} | /users/ludwig/ebu571/ebu571/tools/cpup/cpup | sed 's/,/\\t/g' > {output.mpile}
         cat {output.mpile} | awk '$3=="T" || $3=="t"' |  awk '{{OFS="\\t"}}{{print $1, $2, $3, $4, $8+$17, $6+$15, $11+$20, $5+$14+$7+$16}}' > {output.sta}
         """
