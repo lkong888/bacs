@@ -1,15 +1,4 @@
 ##module load R/4.0.3-foss-2020b
-library(GenomicFeatures)
-library(rtracklayer)
-library(dplyr)
-library(reshape2)
-library(tidyr)
-library(ggplot2)
-library(cowplot)
-library(tidyverse)
-library(parallel)
-library(Biostrings)
-
 bid_only_in_bacs <- read.table("others_data/bid_uniq_site_in_bacs.txt") ##276
 
 nrow(bid_only_in_bacs[bid_only_in_bacs$V41 <0.05, ]) ##245
@@ -27,27 +16,6 @@ unique(praise_only[,c("V1","V2","V3")]) %>% nrow() ##909
 praise_only[praise_only$V29<0.05,c("V1","V2","V3")] %>% unique() %>% nrow() ##796
 praise_only[praise_only$V29>=0.05,c("V1","V2","V3")] %>% unique() %>% nrow() ##256
 praise_only[praise_only$V29>=0.05,]$V31 %>% min() ##0.01005673
-
-
-
-high_only <- read.table("others_data/gr_high_uniq_site_in_bacs_coverage20.txt") ##451
-unique(high_only [,c("V1","V2","V3")]) %>% nrow() ##449
-
-high_only[high_only$V29<0.05,c("V1","V2","V3")] %>% unique() %>% nrow() ##403
-high_only[high_only$V29>=0.05,]$V31 %>% min() ##0.01036349
-nrow(high_only[high_only$V29>=0.05,]) ##46
-
-
-high_coveredby9smp_only <- read.table("others_data/gr_high_covered_9_smp_uniq_site_in_bacs_coverage20.txt") ##92
-unique(high_coveredby9smp_only[,c("V1","V2","V3")]) %>% nrow() ##92
-
-high_coveredby9smp_only[high_coveredby9smp_only$V29<0.05,c("V1","V2","V3")] %>% unique() %>% nrow() ##61
-high_coveredby9smp_only[high_coveredby9smp_only$V29>=0.05,]$V31 %>% min() ##0.01036349
-
-
-
-
-
 
 
 library(VennDiagram)
