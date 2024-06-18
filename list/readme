@@ -10,3 +10,9 @@ And psi sites for Hela, Raji, elijah
 bacs_snrna_allcelllines_merge_sites.txt
 
 Psi sites for snoRNA: 
+snoRNA_tRNA_called_sites_27Oct2023
+
+Psi sites for tRNA: 
+snoRNA_tRNA_called_sites_fdrpassed_tRNA_filtered_27Oct2023
+
+
