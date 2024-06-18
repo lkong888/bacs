@@ -18,10 +18,15 @@ ATGTCTCGACGTNNTNNGTTACAGTACCGT
 # Reference
 Hg38 for human samples; 
 For RNA viruses, the following reference genomes were used: 
+
 Severe acute respiratory syndrome coronavirus 2 isolate Wuhan-Hu-1 (NC_045512.2), 
+
 Recombinant Hepatitis C virus J6(5’UTR-NS2)/JFH1 (JF343782.1), 
+
 Zika virus isolate ZIKV/H.sapiens/Brazil/Natal/2015 (NC_035889.1), 
+
 Hepatitis Delta Virus sequence from the pSVL(D3) plasmid99 (Addgene plasmid #29335) (https://www.addgene.org/29335/), and Sindbis virus (NC_001547.1). 
+
 For EBV samples, reads were aligned to Epstein-Barr virus (EBV) genome, strain B95-8 (V01555.2)
 
 
@@ -35,6 +40,7 @@ For polyA libraries: bacs_alignment1.smk bacs_mRNA_part2.smk and bacs_mRNA_site.
 
 # 2. Call high-confidence pseudouridine sites for small RNA and mRNA
 
+calling_mRNA_ivt1.r and site_calling.r
 
   
   
