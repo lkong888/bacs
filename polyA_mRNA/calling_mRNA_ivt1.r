@@ -44,8 +44,8 @@ binom_t <- function(depth, mod, p) { # false positive rate/probability
 
 ##Sample infor: treat1 vs input1; treat2 vs input2
 ##input colnumn names: chr, start, end, ref, depth, T, C, mod_level, gap, gap_ratio, motif, ctrl_depth, ctrl_T, ctrl_C, ctrl_ratio, ctrl_gap, ctrl_gap_ratio
-##corrected curve: y=(conversion-fp)/(1-0)*x+fp  x=(y-fp)/(conversion-fp)
-##corrected curve for each motif
+##curve: y=(conversion-fp)/(1-0)*x+fp  x=(y-fp)/(conversion-fp)
+##curve for each motif
 
 ###read false positives
 call_sites <- function(input, output){
