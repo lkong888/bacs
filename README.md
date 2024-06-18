@@ -42,7 +42,34 @@ For polyA libraries: bacs_alignment1.smk bacs_mRNA_part2.smk and bacs_mRNA_site.
 
 calling_mRNA_ivt1.r and site_calling.r
 
+# 3. Results for spike-ins( Fig. 1 c,d and Supplementary Fig. 1 c,d)
+
+figure_spikein.r  
+
+# 4. Results for rRNA and snRNA (Fig2 b-I, Supplementary Fig. 2,3,4)
+
+figure2.r
   
-  
-  
-  
+# 5. Results for snoRNA (Supplementary Fig. 5, 6)
+
+figure_snoRNA.r 
+
+# 6. Results for tRNA (Fig3, Supplementary Fig. 7,8,12)
+
+figure_tRNA.r 
+
+# 7. Results for mRNA (Fig4, Supplementary Fig. 9,10)
+
+figure_mRNA.r inosine_plot.r
+
+# 8. Results for comparision between different methods (Supplementary Fig. 11)
+
+comparision_method.r
+
+# 9. Results for KO (Fig 5,Supplementary Fig. 13)
+
+knockout.r
+
+# 10. Results for virus samples (Fig 6,Supplementary Fig. 14,15 )
+
+virus_final.r
