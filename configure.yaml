@@ -1,0 +1,10 @@
+smallrna:
+  [
+    "H10_2023Oct26_S10",
+    "H7_2023Oct26_S7",
+    "H8_2023Oct26_S8",
+    "H9_2023Oct26_S9",
+  ]
+
+nn_fa: "resource/nnunn"
+nn_fasta: "resource/nnunn.fa"
